@@ -9,7 +9,7 @@ on:
       environment:
         description: 'Environment to run'     
         required: true
-        default: 'production'
+        default: 'only_deploy'
   push:
     branches:
       - main
@@ -21,6 +21,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
     - name: deploydev - step 1
+      if: github.event.inputs.environment != 'only_deploy'
       run: echo "Automatic event triggered!"
 
   stg-deploy:
@@ -29,6 +30,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
     - name: deploystg-step 1
+      if: github.event.inputs.environment != 'only_deploy'
       run: echo "Automatic event triggered!"
 
   prod-deploy:
@@ -37,5 +39,5 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Running prod env
-        if: github.ref == 'refs/heads/main' && github.event.inputs.environment == 'production'
+        if: (github.event.inputs.environment == 'only_deploy' ||  github.event.inputs.environment == 'all')
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
