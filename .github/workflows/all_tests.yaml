@@ -1,16 +1,16 @@
-name: Automatic triggered workflow
+name: Manual triggered workflow
 on:
   workflow_dispatch:
     inputs:
       job:
-        description: 'Job to run.'
+        description: 'job to run'     
         required: true
-        default: 'prod-deploy'
-      environment:
-        description: 'Environment to run'     
-        required: true
-        default: 'only_deploy'
+        default: 'deploy-prd'
   push:
+    inputs:
+      job:
+        required: true
+        default: ''
     branches:
       - main
   
@@ -18,7 +18,7 @@ jobs:
   dev-deploy:
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event.inputs.environment != 'only_deploy'
+    if: github.ref == 'refs/heads/main' && github.event.inputs.job != 'deploy-prd'
     steps:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
@@ -26,7 +26,7 @@ jobs:
   stg-deploy:
     name: Deploy stg-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' &&  github.event.inputs.environment != 'only_deploy'
+    if: github.ref == 'refs/heads/main' &&  github.event.inputs.job != 'deploy-prd'
     steps:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
@@ -34,7 +34,7 @@ jobs:
   prod-deploy:
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.environment == 'only_deploy' ||  github.event.inputs.environment == 'all')
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event.inputs.job == 'all')
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
