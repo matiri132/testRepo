@@ -18,26 +18,23 @@ jobs:
   dev-deploy:
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event.inputs.environment != 'only_deploy'
     steps:
     - name: deploydev - step 1
-      if: github.event.inputs.environment != 'only_deploy'
       run: echo "Automatic event triggered!"
 
   stg-deploy:
     name: Deploy stg-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' &&  github.event.inputs.environment != 'only_deploy'
     steps:
     - name: deploystg-step 1
-      if: github.event.inputs.environment != 'only_deploy'
       run: echo "Automatic event triggered!"
 
   prod-deploy:
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.environment == 'only_deploy' ||  github.event.inputs.environment == 'all')
     steps:
       - name: Running prod env
-        if: (github.event.inputs.environment == 'only_deploy' ||  github.event.inputs.environment == 'all')
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
