@@ -1,6 +1,13 @@
 name: Manually triggered workflow
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run'     
+        required: true
+        default: 'development'
+      mode:
+        description: 'Running mode'  
    
 jobs:
   prod-deploy:
@@ -8,5 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-    - name: deployprod-step 1
-      run: echo " Manual event triggered!"
+      - name: Running dev env
+        if: github.event.inputs.environment == 'development'
+        run: echo "Running dev env with mode ${{ github.event.inputs.mode }}"
+      - name: Running prod env
+        if: github.event.inputs.environment == 'production'
+        run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
