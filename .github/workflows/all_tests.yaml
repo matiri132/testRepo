@@ -1,5 +1,15 @@
 name: Automatic triggered workflow
 on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Job to run.'
+        required: true
+        default: 'prod-deploy'
+      environment:
+        description: 'Environment to run'     
+        required: true
+        default: 'production'
   push:
     branches:
       - main
@@ -21,4 +31,11 @@ jobs:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
 
-
+  prod-deploy:
+    name: Deploy prod-deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Running prod env
+        if: github.ref == 'refs/heads/main' && github.event.inputs.environment == 'production'
+        run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
