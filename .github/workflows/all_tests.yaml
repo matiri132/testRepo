@@ -1,17 +1,6 @@
 name: Manually triggered workflow
 on:
-  workflow_dispatch:
-    inputs:
-      job:
-        description: 'Job to run.'
-        required: true
-        default: 'prod-deploy'
   push:
-    inputs:
-      job:
-        description: 'Job to run.'
-        required: true
-        default: 'dev-deploy'
     branches:
       - main
   
@@ -24,10 +13,10 @@ jobs:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
 
-  prod-deploy:
-    name: Deploy prod-deploy
+  stg-deploy:
+    name: Deploy stg-deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-    - name: deployprod-step 1
-      run: echo " Manual event triggered!"
+    - name: deploystg-step 1
+      run: echo "Automatic event triggered!"
