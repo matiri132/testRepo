@@ -13,15 +13,15 @@ jobs:
   dev-deploy:
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.job == 'dev-deploy'}}
+    if: github.ref == 'refs/heads/main'
     steps:
-    - name: ${{ github.event.inputs.job }} - step 1
-      run: echo "${{ github.event.inputs.job }} triggered!"
+    - name: deploydev - step 1
+      run: echo "Automatic event triggered!"
 
   prod-deploy:
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.job == 'prod-deploy'}}
+    if: github.ref == 'refs/heads/main'
     steps:
-    - name: ${{ github.event.inputs.job }} - step 1
-      run: echo "${{ github.event.inputs.job }} triggered!"
+    - name: deployprod-step 1
+      run: echo " Manual event triggered!"
