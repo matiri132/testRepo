@@ -1,4 +1,4 @@
-name: Manually triggered workflow
+name: Automatic triggered workflow
 on:
   push:
     branches:
