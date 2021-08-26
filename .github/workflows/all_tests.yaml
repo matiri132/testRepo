@@ -5,7 +5,7 @@ on:
       job:
         description: 'job to run'     
         required: true
-        default: 'deploy_prd'
+        default: 'deploy_dev'
   push:
     branches:
       - main
@@ -67,15 +67,15 @@ jobs:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
 
-  deploy_prd:
+  deploy_test:
     needs: [ push_image ]
-    name: Deploy deploy_prd
+    name: Deploy deploy_test
     runs-on: ubuntu-latest
     if: |
       always() &&
       (needs.push_image.result == 'success') &&
       github.ref == 'refs/heads/main' &&
-      (github.event.inputs.job == 'deploy_prd' ||  github.event_name != 'workflow_dispatch' )
+      (github.event.inputs.job == 'deploy_test' ||  github.event_name != 'workflow_dispatch' )
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
