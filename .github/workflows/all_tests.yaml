@@ -30,9 +30,9 @@ jobs:
 
   push_image:
     needs: [ lintern , test ]
+    if: github.ref == 'refs/heads/main' && (needs.test.result == 'skipped' || needs.test.result == 'success' ) && (needs.lintern.result == 'skipped' || needs.lintern.result == 'success' )
     name: Push image
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' 
     steps:
     - name: pushimage - step 1
       run: echo "Automatic push image event triggered!"
