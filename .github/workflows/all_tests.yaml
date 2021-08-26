@@ -5,14 +5,31 @@ on:
       job:
         description: 'job to run'     
         required: true
-        default: 'deploy-prd'
+        default: 'deploy_prd'
   push:
     branches:
       - main
   
 jobs:
+  lintern:
+    name: Lintern
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name != 'workflow_dispatch'
+    steps:
+    - name: pushimage - step 1
+      run: echo "Automatic lintern event triggered!"
 
-  push-image:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name != 'workflow_dispatch'
+    steps:
+    - name: pushimage - step 1
+      run: echo "Automatic test event triggered!"
+
+
+  push_image:
+    needs: [ lintern , test ]
     name: Push image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' 
@@ -20,29 +37,29 @@ jobs:
     - name: pushimage - step 1
       run: echo "Automatic push image event triggered!"
 
-  dev-deploy:
+  deploy_dev:
     needs: [ push_image ]
-    name: Deploy dev-deploy
+    name: Deploy deploy_dev
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' ||  github.event_name != 'workflow_dispatch' )
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy_dev' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
 
-  stg-deploy:
+  deploy_stg:
     needs: [ push_image ]
-    name: Deploy stg-deploy
+    name: Deploy deploy_stg
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy-stg' ||  github.event_name != 'workflow_dispatch' )
+    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy_stg' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
 
-  prod-deploy:
+  deploy_prd:
     needs: [ push_image ]
-    name: Deploy prod-deploy
+    name: Deploy deploy_prd
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event_name != 'workflow_dispatch' )
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy_prd' ||  github.event_name != 'workflow_dispatch' )
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
