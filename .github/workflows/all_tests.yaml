@@ -45,7 +45,11 @@ jobs:
     needs: [ push_image ]
     name: Deploy deploy_dev
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy_dev' ||  github.event_name != 'workflow_dispatch' )
+    if: |
+      always() &&
+      (needs.push_image.result == 'success') &&
+      github.ref == 'refs/heads/main' &&
+      (github.event.inputs.job == 'deploy_dev' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
@@ -54,7 +58,11 @@ jobs:
     needs: [ push_image ]
     name: Deploy deploy_stg
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy_stg' ||  github.event_name != 'workflow_dispatch' )
+    if: | 
+      always() &&
+      (needs.push_image.result == 'success') &&
+      github.ref == 'refs/heads/main' &&
+      (github.event.inputs.job == 'deploy_stg' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
@@ -63,7 +71,11 @@ jobs:
     needs: [ push_image ]
     name: Deploy deploy_prd
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy_prd' ||  github.event_name != 'workflow_dispatch' )
+    if: |
+      always() &&
+      (needs.push_image.result == 'success') &&
+      github.ref == 'refs/heads/main' &&
+      (github.event.inputs.job == 'deploy_prd' ||  github.event_name != 'workflow_dispatch' )
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
