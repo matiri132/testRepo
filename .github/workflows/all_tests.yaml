@@ -21,6 +21,7 @@ jobs:
       run: echo "Automatic push image event triggered!"
 
   dev-deploy:
+    needs: [ push_image ]
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' ||  github.event_name != 'workflow_dispatch' )
@@ -29,6 +30,7 @@ jobs:
       run: echo "Automatic event triggered!"
 
   stg-deploy:
+    needs: [ push_image ]
     name: Deploy stg-deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy-stg' ||  github.event_name != 'workflow_dispatch' )
@@ -37,6 +39,7 @@ jobs:
       run: echo "Automatic event triggered!"
 
   prod-deploy:
+    needs: [ push_image ]
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event_name != 'workflow_dispatch' )
