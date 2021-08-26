@@ -10,15 +10,23 @@ on:
     inputs:
       job:
         required: true
-        default: ''
+        default: 'push'
     branches:
       - main
   
 jobs:
+  push-image:
+    name: Push image
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' || github.event.inputs.job == 'deploy-stg' || github.event.inputs.job == 'deploy-test' || github.event.inputs.job == 'push' )
+    steps:
+    - name: pushimage - step 1
+      run: echo "Automatic push image event triggered!"
+
   dev-deploy:
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event.inputs.job != 'deploy-prd'
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' ||  github.event.inputs.job == 'push' )
     steps:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
@@ -26,7 +34,7 @@ jobs:
   stg-deploy:
     name: Deploy stg-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' &&  github.event.inputs.job != 'deploy-prd'
+    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy-stg' ||  github.event.inputs.job == 'push' )
     steps:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
@@ -34,7 +42,7 @@ jobs:
   prod-deploy:
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event.inputs.job == 'all')
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event.inputs.job == 'push' )
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
