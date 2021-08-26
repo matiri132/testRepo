@@ -7,26 +7,15 @@ on:
         required: true
         default: 'deploy-prd'
   push:
-    inputs:
-      job:
-        required: true
-        default: 'push'
     branches:
       - main
   
 jobs:
-  test-job:
-    name: Test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - name: pushimage - step 1
-      run: echo " event name ${{github.event_name}} worflow ${{github.workflow}} action ${{github.action}} "
 
   push-image:
     name: Push image
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' || github.event.inputs.job == 'deploy-stg' || github.event.inputs.job == 'deploy-test' || github.event.inputs.job == 'push' )
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' || github.event.inputs.job == 'deploy-stg' || github.event.inputs.job == 'deploy-test' || github.event_name == 'push' )
     steps:
     - name: pushimage - step 1
       run: echo "Automatic push image event triggered!"
@@ -34,7 +23,7 @@ jobs:
   dev-deploy:
     name: Deploy dev-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' ||  github.event.inputs.job == 'push' )
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-dev' ||  github.event_name == 'push' )
     steps:
     - name: deploydev - step 1
       run: echo "Automatic event triggered!"
@@ -42,7 +31,7 @@ jobs:
   stg-deploy:
     name: Deploy stg-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy-stg' ||  github.event.inputs.job == 'push' )
+    if: github.ref == 'refs/heads/main' &&  (github.event.inputs.job == 'deploy-stg' ||  github.event_name == 'push' )
     steps:
     - name: deploystg-step 1
       run: echo "Automatic event triggered!"
@@ -50,7 +39,7 @@ jobs:
   prod-deploy:
     name: Deploy prod-deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event.inputs.job == 'push' )
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.job == 'deploy-prd' ||  github.event_name == 'push' )
     steps:
       - name: Running prod env
         run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
