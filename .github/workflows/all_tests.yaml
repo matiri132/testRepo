@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: pushimage - step 1
-      run: echo "Automatic push image event triggered!"
+      run: echo "Push image event triggered!"
 
   deploy_dev:
     needs: [ push_image ]
@@ -52,7 +52,7 @@ jobs:
       (github.event.inputs.job == 'deploy_dev' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploydev - step 1
-      run: echo "Automatic event triggered!"
+      run: echo "Deploy dev triggered!"
 
   deploy_stg:
     needs: [ push_image ]
@@ -65,7 +65,7 @@ jobs:
       (github.event.inputs.job == 'deploy_stg' ||  github.event_name != 'workflow_dispatch' )
     steps:
     - name: deploystg-step 1
-      run: echo "Automatic event triggered!"
+      run: echo "Deploy staging triggered!"
 
   deploy_test:
     needs: [ push_image ]
@@ -78,4 +78,4 @@ jobs:
       (github.event.inputs.job == 'deploy_test' ||  github.event_name != 'workflow_dispatch' )
     steps:
       - name: Running prod env
-        run: echo "Running prod env with mode ${{ github.event.inputs.mode }}"
+        run: echo "Deploy test triggered"
