@@ -24,10 +24,10 @@ jobs:
               modules="${modules} ${folder}"
             fi
           done
-          export MODULES_TO_BUILD="${modules}"
+#          export MODULES_TO_BUILD="${modules}"
 
 #          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
-          echo "${MODULES_TO_BUILD}"
+          echo "${modules}"
       outputs: 
         modules_to_build: ${{steps.identify.outputs.modules_to_build}}
 
