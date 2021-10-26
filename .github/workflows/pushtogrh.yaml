@@ -44,23 +44,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      #- run: docker pull ghcr.io/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
       - name: 'Login to GHCR'
         uses: docker/login-action@v1
         with:
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      #  run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      #  run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
       - name: 'Build and push to GHCR'
         env:
           GITHUB_REPOSITORY: ${{github.event.repository.name}}
         run: |
           for module in ${{ needs.get-changed-files.outputs.modules_to_build }}; do
-            docker pull docker.pkg.github.com/${GITHUB_REPOSITORY}/${module}:latest || true
-            docker build  -t docker.pkg.github.com/${GITHUB_REPOSITORY}/${module}:latest -f ${module}/Dockerfile . --cache-from=docker.pkg.github.com/${GITHUB_REPOSITORY}/${module}
-            docker push docker.pkg.github.com/${GITHUB_REPOSITORY}/${module}:latest || true
+            docker pull ghcr.io/${GITHUB_REPOSITORY}/${module}:latest || true
+            docker build  -t ghcr.io/${GITHUB_REPOSITORY}/${module}:latest -f ${module}/Dockerfile . --cache-from=ghcr.io/${GITHUB_REPOSITORY}/${module}
+            docker push ghcr.io/${GITHUB_REPOSITORY}/${module}:latest || true
           done
         
-      #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
-      #- run: docker tag thing docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      #- run: docker build . -t thing --cache-from=ghcr.io/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      #- run: docker tag thing ghcr.io/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push ghcr.io/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
