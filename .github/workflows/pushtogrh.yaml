@@ -26,7 +26,8 @@ jobs:
           done
           export MODULES_TO_BUILD="${modules}"
 
-          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
+#          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
+          echo "${MODULES_TO_BUILD}"
       outputs: 
         modules_to_build: ${{steps.identify.outputs.modules_to_build}}
 
