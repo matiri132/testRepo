@@ -12,30 +12,34 @@ jobs:
     name: 'List changed modules'
     #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    steps:
-      - name: 'List changed files'
-        uses: jitterbit/get-changed-files@v1
-      - name: 'List changed modules'
-        id: 'list'
-        run: |
-          for changed_file in ${{ steps.files.outputs.added_modified }}; do
-            folder=$(echo $changed_file | cut -d '/' -f 1)
-            if [ $folder != ".github" ]; then
-              prefixes+=("${folder}")
-            fi
-          done
-
-          modules=()
-          while IFS= read -r -d '' x
-          do
-            modules+=("$x")
-          done < <(printf "%s\0" "${prefixes[@]}" | sort -uz)
-
-          export MODULES_TO_BUILD="${modules[*]}"
-          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
     outputs:
-        modules_to_build: ${{ steps.list.outputs.modules_to_build }}
+      modules_to_build: ${{ steps.list.outputs.changed_modules }}
+    steps:
+    - name: 'List changed files'
+      uses: jitterbit/get-changed-files@v1
+    - name: 'List changed modules'
+      id: 'list'
+      run: |
+        for changed_file in ${{ steps.files.outputs.added_modified }}; do
+          folder=$(echo $changed_file | cut -d '/' -f 1)
+          if [ $folder != ".github" ]; then
+            prefixes+=("${folder}")
+          fi
+        done
+         
+        modules=()
+        while IFS= read -r -d '' x
+        do
+          modules+=("$x")
+        done < <(printf "%s\0" "${prefixes[@]}" | sort -uz)
 
+        export MODULES_TO_BUILD="${modules[*]}"
+        echo "${MODULES_TO_BUILD}"
+        echo "::set-output name=changed_modules::${MODULES_TO_BUILD}"
+    - name: 'Test'
+      id: 'test'
+      run: echo ${{ steps.list.outputs.changed_modules }}
+    
 
   push-image:
     name: 'Build & Push Image'
@@ -45,7 +49,7 @@ jobs:
       - name: 'Build & Push to GHR'
         uses: actions/checkout@v2
       - run: |
-          echo "${{ needs.get-changed-files.outputs }}"
+          echo "${{ needs.get-changed-files.outputs.modules_to_build }}"
 
 
 #      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
