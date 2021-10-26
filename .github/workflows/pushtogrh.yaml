@@ -28,8 +28,6 @@ jobs:
           fi
         done
 
-        echo "${prefixes[*]}"
-         
         modules=()
         while IFS= read -r -d '' x
         do
@@ -39,11 +37,7 @@ jobs:
         export MODULES_TO_BUILD="${modules[*]}"
         echo "${MODULES_TO_BUILD}"
         echo "::set-output name=changed_modules::${MODULES_TO_BUILD}"
-    - name: 'Test'
-      id: 'test'
-      run: echo "${{ steps.list.outputs.changed_modules }}"
-    
-
+   
   push-image:
     name: 'Build & Push Image'
     needs: get-changed-files
@@ -51,15 +45,13 @@ jobs:
     steps:
       - name: 'Build & Push to GHR'
         uses: actions/checkout@v2
-      - run: |
-          echo "${{ needs.get-changed-files.outputs.modules_to_build }}"
-
-
-#      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-#      - run: echo "${{needs.get_changed_files.outputs.modules_to_build}}"
       
-      
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+     
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
-      #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
+      - run: |
+          for module in ${{ needs.get-changed-files.outputs.modules_to_build }}; do
+            docker build -f ${module}/Dockerfile -t latest
+          done
       #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
       #- run: docker tag thing docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
