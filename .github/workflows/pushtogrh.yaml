@@ -9,11 +9,11 @@ on:
 
 jobs:
   get_changed_files:
-    name: 'List changed files'
+    name: 'List changed modules'
     #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: 'List changed files'
+      - name: 'List changed modules'
         id: 'files'
         uses: jitterbit/get-changed-files@v1
       - run: |
@@ -30,12 +30,8 @@ jobs:
             modules+=("$x")
           done < <(printf "%s\0" "${prefixes[@]}" | sort -uz)
 
-          echo ${modules[*]}
-
-
-
-#          export MODULES_TO_BUILD="${modules}"
-#          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
+          export MODULES_TO_BUILD="${modules[*]}"
+          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
 
 
 
