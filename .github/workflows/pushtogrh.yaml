@@ -8,30 +8,39 @@ on:
       - toghr
 
 jobs:
-  push_image:
-    name: 'Build & Push Image'
+  get_changed_files:
+    name: 'List changed files'
     #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: 'Test'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-      
       - name: 'List changed files'
         id: 'files'
         uses: jitterbit/get-changed-files@v1
       - run: |
+          modules=""
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             folder=$(echo $changed_file | cut -d '/' -f 1)
             if [ $folder != ".github" ]; then
-              echo $folder
+              modules="${modules} ${folder}"
             fi
           done
-      #- uses: actions/checkout@v2
-      #- run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      #- run: echo 
+          echo "::set-output name=modules::${modules}"
+      outputs: 
+        modules: ${{steps.identify.outputs.modules}}
+
+  push_image:
+    name: 'Build & Push Image'
+    needs: get_changed_files
+    #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build & Push to GHR'
+        uses: actions/checkout@v2
+      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+      - run: echo "${{needs.get_changed_files.outputs.modules}}"
+      
+      
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
+      #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
       #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
       #- run: docker tag thing docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
