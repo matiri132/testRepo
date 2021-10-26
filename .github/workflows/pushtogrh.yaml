@@ -52,8 +52,6 @@ jobs:
 
       - name: 'Build & Push to GHR'
         uses: actions/checkout@v2
-        env:
-          GITHUB_REPOSITORY: ${{github.event.repository.name}}
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
       - run: |
           for module in ${{ needs.get-changed-files.outputs.modules_to_build }}; do
@@ -61,5 +59,7 @@ jobs:
             docker build  -t docker.pkg.github.com/$GITHUB_REPOSITORY/${module} -f ${module}/Dockerfile . --cache-from=docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${module}
             docker push docker.pkg.github.com/module-security-lambda/${module}:latest || true
           done
+        env:
+          GITHUB_REPOSITORY: ${{github.event.repository.name}}
       #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
       #- run: docker tag thing docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
