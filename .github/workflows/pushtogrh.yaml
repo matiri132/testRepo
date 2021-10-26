@@ -17,7 +17,6 @@ jobs:
         id: 'files'
         uses: jitterbit/get-changed-files@v1
       - run: |
-          modules=""
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             folder=$(echo $changed_file | cut -d '/' -f 1)
             if [ $folder != ".github" ]; then
@@ -25,7 +24,6 @@ jobs:
             fi
           done
 #          export MODULES_TO_BUILD="${modules}"
-
 #          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
           echo "${modules}"
       outputs: 
