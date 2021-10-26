@@ -19,10 +19,11 @@ jobs:
       - run: |
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             folder=$(echo $changed_file | cut -d '/' -f 1)
-            echo "${folder}"
+            if [ $folder != ".github" ]; then
+              echo "${folder}"
+              modules="${modules} ${folder}"
+            fi
           done
-      outputs: 
-        modules_to_build: ${{steps.identify.outputs.modules_to_build}}
 
 
 #          export MODULES_TO_BUILD="${modules}"
