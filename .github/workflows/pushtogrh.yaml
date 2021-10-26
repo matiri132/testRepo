@@ -51,7 +51,8 @@ jobs:
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
       - run: |
           for module in ${{ needs.get-changed-files.outputs.modules_to_build }}; do
-            docker build -f ${module}/Dockerfile -t latest
+            docker build  -t docker.pkg.github.com/module-security-lambda/${module}/latest -f ${module}/Dockerfile . --cache-from=docker.pkg.github.com/module-security-lambda/${module}
+            docker push docker.pkg.github.com/module-security-lambda/${module}:latest || true
           done
       #- run: docker build . -t thing --cache-from=docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit
       #- run: docker tag thing docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit && docker push docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
