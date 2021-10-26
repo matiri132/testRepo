@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'List changed modules'
-        id: 'list'
         uses: jitterbit/get-changed-files@v1
-      - run: |
+      - id: 'list'
+        run: |
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             folder=$(echo $changed_file | cut -d '/' -f 1)
             if [ $folder != ".github" ]; then
