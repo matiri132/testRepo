@@ -13,6 +13,8 @@ from io import BytesIO
 from pprint import pprint
 from requests_aws4auth import AWS4Auth
 
+
+
 """
 Can override the global variables using Lambda Environment Parameters
 """

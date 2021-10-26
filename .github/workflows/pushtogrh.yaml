@@ -31,6 +31,7 @@ jobs:
           done < <(printf "%s\0" "${prefixes[@]}" | sort -uz)
 
           export MODULES_TO_BUILD="${modules[*]}"
+          echo "${MODULES_TO_BUILD}"
           echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
     outputs:
         modules_to_build: ${{ steps.identify.outputs.modules_to_build}}
