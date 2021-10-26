@@ -13,9 +13,10 @@ jobs:
     #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: 'List changed modules'
+      - name: 'List changed files'
         uses: jitterbit/get-changed-files@v1
-      - id: 'list'
+      - name: 'List changed modules'
+        id: 'list'
         run: |
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
             folder=$(echo $changed_file | cut -d '/' -f 1)
@@ -36,16 +37,15 @@ jobs:
         modules_to_build: ${{ steps.list.outputs.modules_to_build }}
 
 
-  push_image:
+  push-image:
     name: 'Build & Push Image'
     needs: get-changed-files
-
     runs-on: ubuntu-latest
     steps:
       - name: 'Build & Push to GHR'
         uses: actions/checkout@v2
       - run: |
-          echo "${{ needs.get-changed-files.outputs.modules_to_build }}"
+          echo "${{ needs.get-changed-files.outputs }}"
 
 
 #      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
