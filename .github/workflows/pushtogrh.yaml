@@ -26,6 +26,8 @@ jobs:
             prefixes+=("${folder}")
           fi
         done
+
+        echo "${prefixes[*]}"
          
         modules=()
         while IFS= read -r -d '' x
@@ -38,7 +40,7 @@ jobs:
         echo "::set-output name=changed_modules::${MODULES_TO_BUILD}"
     - name: 'Test'
       id: 'test'
-      run: echo ${{ steps.list.outputs.changed_modules }}
+      run: echo "${{ steps.list.outputs.changed_modules }}"
     
 
   push-image:
