@@ -23,22 +23,26 @@ jobs:
               modules="${modules} ${folder}"
             fi
           done
-#          export MODULES_TO_BUILD="${modules}"
-#          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
           echo "${modules}"
       outputs: 
         modules_to_build: ${{steps.identify.outputs.modules_to_build}}
 
-  push_image:
-    name: 'Build & Push Image'
-    needs: get_changed_files
-    #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Build & Push to GHR'
-        uses: actions/checkout@v2
-      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: echo "${{needs.get_changed_files.outputs.modules_to_build}}"
+
+#          export MODULES_TO_BUILD="${modules}"
+#          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
+
+
+
+#  push_image:
+#    name: 'Build & Push Image'
+#    needs: get_changed_files
+#    #if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: 'Build & Push to GHR'
+#        uses: actions/checkout@v2
+#      - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
+#      - run: echo "${{needs.get_changed_files.outputs.modules_to_build}}"
       
       
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
