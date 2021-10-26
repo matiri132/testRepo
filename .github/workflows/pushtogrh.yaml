@@ -16,6 +16,7 @@ jobs:
       modules_to_build: ${{ steps.list.outputs.changed_modules }}
     steps:
     - name: 'List changed files'
+      id: 'files'
       uses: jitterbit/get-changed-files@v1
     - name: 'List changed modules'
       id: 'list'
