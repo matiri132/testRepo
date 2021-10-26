@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'List changed modules'
-        id: 'files'
+        id: 'list'
         uses: jitterbit/get-changed-files@v1
       - run: |
           for changed_file in ${{ steps.files.outputs.added_modified }}; do
@@ -33,7 +33,7 @@ jobs:
           export MODULES_TO_BUILD="${modules[*]}"
           echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
     outputs:
-        modules_to_build: ${{ steps.identify.outputs.modules_to_build }}
+        modules_to_build: ${{ steps.list.outputs.modules_to_build }}
 
 
   push_image:
