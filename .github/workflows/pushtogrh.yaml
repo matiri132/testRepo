@@ -25,10 +25,10 @@ jobs:
             fi
           done
           export MODULES_TO_BUILD="${modules}"
-          
-          echo "::set-output name=modules::${modules}"
+
+          echo "::set-output name=modules_to_build::${MODULES_TO_BUILD}"
       outputs: 
-        modules: ${{steps.identify.outputs.modules}}
+        modules_to_build: ${{steps.identify.outputs.modules_to_build}}
 
   push_image:
     name: 'Build & Push Image'
@@ -39,7 +39,7 @@ jobs:
       - name: 'Build & Push to GHR'
         uses: actions/checkout@v2
       - run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_ACTOR --password-stdin
-      - run: echo "${{needs.get_changed_files.outputs.modules}}"
+      - run: echo "${{needs.get_changed_files.outputs.modules_to_build}}"
       
       
       #- run: docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/build-cache-no-buildkit || true
