@@ -57,8 +57,8 @@ jobs:
           GITHUB_REPOSITORY: ${{github.event.repository.name}}
         run: |
           for module in ${{ needs.get-changed-files.outputs.modules_to_build }}; do
-            docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/${module} || true
-            docker build  -t docker.pkg.github.com/$GITHUB_REPOSITORY/${module} -f ${module}/Dockerfile . --cache-from=docker.pkg.github.com/${{GITHUB_REPOSITORY}}/${module}
+            docker pull docker.pkg.github.com/${GITHUB_REPOSITORY}/${module} || true
+            docker build  -t docker.pkg.github.com/${GITHUB_REPOSITORY}/${module} -f ${module}/Dockerfile . --cache-from=docker.pkg.github.com/${GITHUB_REPOSITORY}/${module}
             docker push docker.pkg.github.com/module-security-lambda/${module}:latest || true
           done
         
