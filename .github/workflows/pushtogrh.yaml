@@ -24,6 +24,8 @@ jobs:
               modules="${modules} ${folder}"
             fi
           done
+          export MODULES_TO_BUILD="${modules}"
+          
           echo "::set-output name=modules::${modules}"
       outputs: 
         modules: ${{steps.identify.outputs.modules}}
